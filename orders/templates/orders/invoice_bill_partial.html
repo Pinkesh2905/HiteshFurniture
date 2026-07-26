@@ -1,0 +1,271 @@
+<style>
+    .invoice-sheet {
+        width: 100%;
+        background: #ffffff;
+        color: #1f1a17;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 1.35;
+        padding: 22px;
+        box-sizing: border-box;
+    }
+    .invoice-sheet header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        border-bottom: 2px solid #1e293b;
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+    }
+    .invoice-sheet h1 {
+        margin: 0;
+        font-size: 26px;
+        letter-spacing: -0.03em;
+        color: #1e293b;
+    }
+    .invoice-sheet .subtitle {
+        margin-top: 4px;
+        color: #675b51;
+        font-size: 12px;
+    }
+    .invoice-sheet .meta {
+        text-align: right;
+        color: #3b332d;
+    }
+    .invoice-sheet .meta strong {
+        display: inline-block;
+        min-width: 92px;
+    }
+    .invoice-sheet .customer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 14px;
+        padding: 10px;
+        background: #fbf8f3;
+        border: 1px solid #eadfce;
+    }
+    .invoice-sheet .filter-label {
+        display: inline-block;
+        color: #7a6d61;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+        width: 60px;
+    }
+    .invoice-sheet .filter-value {
+        color: #1f1a17;
+        font-weight: 700;
+    }
+    .invoice-sheet table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+    }
+    .invoice-sheet th {
+        background: #1e293b;
+        color: #ffffff;
+        text-align: left;
+        font-size: 10px;
+        padding: 8px 7px;
+        border: 1px solid #1e293b;
+        text-transform: uppercase;
+    }
+    .invoice-sheet td {
+        padding: 8px 7px;
+        border: 1px solid #e4dcd3;
+        vertical-align: top;
+    }
+    .invoice-sheet tbody tr:nth-child(even) td {
+        background: #fcfaf7;
+    }
+    .invoice-sheet .right {
+        text-align: right;
+    }
+    .invoice-sheet .center {
+        text-align: center;
+    }
+    .invoice-sheet .muted {
+        color: #756b62;
+        font-size: 11px;
+    }
+    .invoice-sheet tfoot td {
+        background: #fbf8f3;
+        font-weight: 700;
+    }
+    .invoice-sheet .grand-total-row td {
+        background: #fbf8f3;
+        border-top: 2px solid #1e293b;
+        border-bottom: 2px solid #1e293b;
+        font-size: 14px;
+    }
+    .invoice-sheet .terms-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 24px;
+        font-size: 10px;
+        color: #756b62;
+    }
+    .invoice-sheet .terms-footer h3 {
+        color: #1f1a17;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin: 0 0 4px 0;
+    }
+    .invoice-sheet .terms-footer ol {
+        margin: 0;
+        padding-left: 16px;
+    }
+    .invoice-sheet .signature {
+        text-align: center;
+        width: 150px;
+    }
+    .invoice-sheet .signature-line {
+        border-bottom: 1px dashed #1e293b;
+        height: 40px;
+        margin-bottom: 4px;
+    }
+    @media print {
+        .invoice-sheet {
+            padding: 0;
+            border: none;
+        }
+    }
+</style>
+
+<div class="invoice-sheet">
+    <header>
+        <div>
+            <h1>Hitesh Furniture</h1>
+            <div class="subtitle">Premium Home &amp; Office Furniture</div>
+            <div class="subtitle" style="margin-top: 8px;">
+                Opp. Kalyan Baug, Station Road<br>
+                Borsad, Anand, Gujarat - 388540<br>
+                <strong>Ph: +91 98750 34836</strong>
+            </div>
+        </div>
+        <div class="meta">
+            <h2 style="margin:0 0 8px 0; font-size: 18px; color: #b45309;">INVOICE</h2>
+            <div><strong>Bill No:</strong> #{{ order.id|stringformat:"03d" }}</div>
+            <div><strong>Date:</strong> {{ order.date|date:"d M Y" }}</div>
+        </div>
+    </header>
+
+    <div class="customer-grid">
+        <div>
+            <div style="margin-bottom: 4px;">
+                <span class="filter-label">Name:</span>
+                <span class="filter-value">{{ order.customer.full_name|title }}</span>
+            </div>
+            <div style="margin-bottom: 4px;">
+                <span class="filter-label">Phone:</span>
+                <span class="filter-value">{{ order.customer.phone }}</span>
+            </div>
+            <div>
+                <span class="filter-label">City:</span>
+                <span class="filter-value">{{ order.customer.city|title|default:"-" }}</span>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div style="margin-bottom: 4px;">
+                <span class="filter-label">Order:</span>
+                <span class="filter-value">{{ order.order_number }}</span>
+            </div>
+            <div style="margin-bottom: 4px;">
+                <span class="filter-label">Status:</span>
+                <span class="filter-value">{{ order.get_status_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40px;" class="center">S.No</th>
+                <th>Particulars / Description</th>
+                <th style="width: 60px;" class="right">Qty</th>
+                <th style="width: 100px;" class="right">Rate (₹)</th>
+                <th style="width: 100px;" class="right">Amount (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td class="center">{{ forloop.counter }}</td>
+                <td>
+                    <div style="font-weight: 700;">{{ item.description }}</div>
+                    {% if item.measurement and item.measurement.notes %}
+                    <div class="muted" style="margin-top: 2px;">Note: {{ item.measurement.notes }}</div>
+                    {% endif %}
+                </td>
+                <td class="right">{{ item.quantity }}</td>
+                <td class="right">{{ item.rate }}</td>
+                <td class="right" style="font-weight: 700;">{{ item.total_amount }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="center muted" style="padding: 20px;">No items in this order.</td>
+            </tr>
+            {% endfor %}
+            {% for i in filler_rows %}
+            <tr>
+                <td class="center">{{ forloop.counter|add:items.count }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" rowspan="5" style="background: #ffffff; border: none; vertical-align: bottom;">
+                    <div style="margin-bottom: 12px;">
+                        <span class="filter-label" style="width: 100px;">Amount in Words:</span><br>
+                        <span style="font-weight: 700; font-style: italic;">Rupees {{ amount_in_words }}.</span>
+                    </div>
+                </td>
+                <td class="right">Gross Total</td>
+                <td class="right">₹ {{ order.subtotal }}</td>
+            </tr>
+            <tr>
+                <td class="right">Discount</td>
+                <td class="right">- ₹ {{ order.discount_amount }}</td>
+            </tr>
+            <tr>
+                <td class="right">Net Amount</td>
+                <td class="right" style="font-weight: 700;">₹ {{ order.final_amount }}</td>
+            </tr>
+            <tr>
+                <td class="right">Advance Paid</td>
+                <td class="right" style="color: #0f766e; font-weight: 700;">₹ {{ order.advance_paid }}</td>
+            </tr>
+            <tr class="grand-total-row">
+                <td class="right">BALANCE DUE</td>
+                <td class="right">₹ {{ order.grand_total }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="terms-footer">
+        <div>
+            <h3>Terms &amp; Conditions</h3>
+            <ol>
+                <li>Custom orders cannot be cancelled once production begins.</li>
+                <li>Balance payment must be cleared before or at delivery.</li>
+                <li>Natural wood variations &amp; grain differences are not defects.</li>
+            </ol>
+            <div style="margin-top: 6px;">
+                <strong>Shop Time:</strong> 9:30 AM to 7:30 PM | <strong>Delivery:</strong> 1:00 PM to 7:00 PM
+            </div>
+        </div>
+        <div class="signature">
+            <div class="signature-line">
+                <span style="font-family: 'Playfair Display', serif; font-size: 20px; color: #b45309; opacity: 0.2; font-style: italic;">Hitesh</span>
+            </div>
+            <strong>For Hitesh Furniture</strong>
+        </div>
+    </div>
+</div>
